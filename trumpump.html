@@ -1,6 +1,5 @@
 <body style="cursor: crosshair; outline: rgb(0, 0, 0) dotted 3px; outline-offset: 1px;">
 
-
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Trump Clicker Game</title>
@@ -12,12 +11,12 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #e0f7fa; /* Light blue background */
+            background-color: #121212; /* Dark background */
             font-family: Arial, sans-serif;
             overflow: hidden; /* Prevent overflow */
         }
         h1 {
-            color: #d32f2f; /* Red color for the header */
+            color: #ffeb3b; /* Yellow color for the header */
             margin-bottom: 20px; /* Space below the header */
         }
         .game-container {
@@ -25,11 +24,11 @@
             flex-direction: column; /* Stack items vertically */
             gap: 20px;
             align-items: center;
-            border: 2px solid #00796b; /* Dark teal border */
+            border: 2px solid #bb86fc; /* Light purple border */
             border-radius: 10px;
             padding: 20px;
-            background-color: #ffffff; /* White background for the container */
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            background-color: #1e1e1e; /* Dark container background */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
             width: 90%; /* Use percentage width */
             max-width: 600px; /* Set a maximum width */
         }
@@ -47,23 +46,49 @@
         #click-counter {
             font-size: 24px;
             font-weight: bold;
-            color: #d32f2f; /* Red color for the click counter */
+            color: #ffeb3b; /* Yellow color for the click counter */
+        }
+        #share-button {
+            margin-left: 10px; /* Space between counter and button */
+            padding: 5px 10px;
+            background-color: #1da1f2; /* Twitter blue */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
         }
         #click-chart {
             width: 100%; /* Make chart responsive */
             height: 200px;
-            background-color: #f1f8e9; /* Light green background for the chart */
-            border: 2px solid #388e3c; /* Dark green border */
+            background-color: #2e2e2e; /* Dark gray background for the chart */
+            border: 2px solid #bb86fc; /* Light purple border */
             border-radius: 10px;
         }
         #message-box {
-            background-color: #ffeb3b; /* Yellow background for the message box */
+            background-color: #ff5722; /* Orange background for the message box */
             border: 2px solid #fbc02d; /* Darker yellow border */
             border-radius: 10px;
             padding: 10px;
             font-size: 18px;
             font-weight: bold;
-            color: #000; /* Black text color */
+            color: #ffffff; /* White text color */
+            text-align: center; /* Center the text */
+        }
+        #pump-question {
+            color: #ffffff; /* White text color for the question */
+            font-size: 20px; /* Font size for the question */
+            margin-top: 10px; /* Space above the question */
+        }
+        #reverse-counter-container {
+            position: absolute; /* Position it outside the main container */
+            top: 20px; /* Adjust as needed */
+            right: 20px; /* Adjust as needed */
+            background-color: #1e1e1e; /* Dark background for the counter */
+            border: 2px solid #bb86fc; /* Light purple border */
+            border-radius: 10px;
+            padding: 10px;
+            color: #ffeb3b; /* Yellow text color */
+            font-size: 24px; /* Font size for the counter */
             text-align: center; /* Center the text */
         }
 
@@ -75,13 +100,18 @@
         }
     </style>
 
-
     <h1>Trump Pumper</h1>
     <div id="message-box">Pump the f*cking coin!</div>
+    
+    <div id="pump-question">How High Can We Pump This? CA:</div> <!-- New div for the question -->
+    
+    <div id="reverse-counter-container">Clicks Into Heaven: 999,987</div> <!-- Reverse counter container -->
+
     <div class="game-container">
         <div>
             <img id="trump-image" src="https://www.inquirer.com/resizer/FFVGw6LiSMZ-f1EVgmdFdAh2VEk=/760x507/smart/filters:format(webp)/arc-anglerfish-arc2-prod-pmn.s3.amazonaws.com/public/XL722UZTEJGU7G2WPT5FKTYZT4.jpg" alt="Trump Image" style="outline: rgb(0, 0, 0) dotted 3px; outline-offset: 1px;">
-            <p id="click-counter">Clicks: 0</p>
+            <p id="click-counter">Clicks: 13</p>
+            <button id="share-button" onclick="shareScore()">Share Your Score</button>
         </div>
         <canvas id="click-chart" width="600" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 600px;"></canvas>
     </div>
@@ -90,10 +120,12 @@
     <script>
         let clickCount = 0;
         const clickData = [0]; // Initial data for the chart
+        let reverseCounter = 1000000; // Initialize reverse counter
 
         // Get DOM elements
         const trumpImage = document.getElementById('trump-image');
         const clickCounter = document.getElementById('click-counter');
+        const reverseCounterContainer = document.getElementById('reverse-counter-container');
 
         // Set up Chart.js
         const ctx = document.getElementById('click-chart').getContext('2d');
@@ -102,7 +134,7 @@
             data: {
                 labels: ['0'],
                 datasets: [{
-                    label: 'Trump Clicks',
+                    label: '$PTFC', // Updated title
                     data: clickData,
                     borderColor: 'rgba(255, 99, 132, 1)',
                     backgroundColor: 'rgba(255, 99, 132, 0.2)',
@@ -116,13 +148,16 @@
                         beginAtZero: true,
                         title: {
                             display: true,
-                            text: 'Number of Clicks'
+                            text: 'Price' // Updated y-axis label
+                        },
+                        ticks: {
+                            stepSize: 1000 // Set y-axis to increase by 1000
                         }
                     },
                     x: {
                         title: {
                             display: true,
-                            text: 'The Coins'
+                            text: 'Clicks' // Updated x-axis label
                         }
                     }
                 }
@@ -133,10 +168,23 @@
         trumpImage.addEventListener('click', () => {
             clickCount++;
             clickCounter.textContent = `Clicks: ${clickCount}`;
-            clickData.push(clickCount);
-            clickChart.data.labels.push(clickData.length);
+            clickData.push(clickCount * 1000); // Update data to reflect price increase
+            clickChart.data.labels.push(clickCount); // Update x-axis labels with click count
             clickChart.update();
+
+            // Update reverse counter
+            reverseCounter--;
+            reverseCounterContainer.textContent = `Clicks Into Heaven: ${reverseCounter.toLocaleString()}`; // Format with commas
         });
+
+        // Share score function
+        function shareScore() {
+            const tweetText = `I pumped the f*cking coins ${clickCount} times because Trump told me so. Can you beat my score? 
+            
+            https://trump-pumper.vercel.app/trumpump.html`;
+            const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+            window.open(tweetUrl, '_blank');
+        }
     </script>
 
 
