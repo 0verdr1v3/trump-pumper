@@ -1,0 +1,145 @@
+<body style="cursor: crosshair; outline: rgb(0, 0, 0) dotted 3px; outline-offset: 1px;">
+
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trump Clicker Game</title>
+    <style>
+        body {
+            display: flex;
+            flex-direction: column; /* Stack header and game container */
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #e0f7fa; /* Light blue background */
+            font-family: Arial, sans-serif;
+            overflow: hidden; /* Prevent overflow */
+        }
+        h1 {
+            color: #d32f2f; /* Red color for the header */
+            margin-bottom: 20px; /* Space below the header */
+        }
+        .game-container {
+            display: flex;
+            flex-direction: column; /* Stack items vertically */
+            gap: 20px;
+            align-items: center;
+            border: 2px solid #00796b; /* Dark teal border */
+            border-radius: 10px;
+            padding: 20px;
+            background-color: #ffffff; /* White background for the container */
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 90%; /* Use percentage width */
+            max-width: 600px; /* Set a maximum width */
+        }
+        #trump-image {
+            width: 100%; /* Make image responsive */
+            height: auto;
+            cursor: pointer;
+            transition: transform 1s;
+            border: 5px solid #ff5722; /* Orange border around the image */
+            border-radius: 10px;
+        }
+        #trump-image:hover {
+            transform: scale(1.05);
+        }
+        #click-counter {
+            font-size: 24px;
+            font-weight: bold;
+            color: #d32f2f; /* Red color for the click counter */
+        }
+        #click-chart {
+            width: 100%; /* Make chart responsive */
+            height: 200px;
+            background-color: #f1f8e9; /* Light green background for the chart */
+            border: 2px solid #388e3c; /* Dark green border */
+            border-radius: 10px;
+        }
+        #message-box {
+            background-color: #ffeb3b; /* Yellow background for the message box */
+            border: 2px solid #fbc02d; /* Darker yellow border */
+            border-radius: 10px;
+            padding: 10px;
+            font-size: 18px;
+            font-weight: bold;
+            color: #000; /* Black text color */
+            text-align: center; /* Center the text */
+        }
+
+        /* Media Queries for smaller screens */
+        @media (max-width: 600px) {
+            #click-counter {
+                font-size: 20px; /* Smaller font size for mobile */
+            }
+        }
+    </style>
+
+
+    <h1>Trump Pumper</h1>
+    <div id="message-box">Pump the f*cking coin!</div>
+    <div class="game-container">
+        <div>
+            <img id="trump-image" src="https://www.inquirer.com/resizer/FFVGw6LiSMZ-f1EVgmdFdAh2VEk=/760x507/smart/filters:format(webp)/arc-anglerfish-arc2-prod-pmn.s3.amazonaws.com/public/XL722UZTEJGU7G2WPT5FKTYZT4.jpg" alt="Trump Image" style="outline: rgb(0, 0, 0) dotted 3px; outline-offset: 1px;">
+            <p id="click-counter">Clicks: 0</p>
+        </div>
+        <canvas id="click-chart" width="600" height="300" style="display: block; box-sizing: border-box; height: 300px; width: 600px;"></canvas>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        let clickCount = 0;
+        const clickData = [0]; // Initial data for the chart
+
+        // Get DOM elements
+        const trumpImage = document.getElementById('trump-image');
+        const clickCounter = document.getElementById('click-counter');
+
+        // Set up Chart.js
+        const ctx = document.getElementById('click-chart').getContext('2d');
+        const clickChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: ['0'],
+                datasets: [{
+                    label: 'Trump Clicks',
+                    data: clickData,
+                    borderColor: 'rgba(255, 99, 132, 1)',
+                    backgroundColor: 'rgba(255, 99, 132, 0.2)',
+                    fill: true,
+                    tension: 0.4
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        title: {
+                            display: true,
+                            text: 'Number of Clicks'
+                        }
+                    },
+                    x: {
+                        title: {
+                            display: true,
+                            text: 'The Coins'
+                        }
+                    }
+                }
+            }
+        });
+
+        // Click event listener
+        trumpImage.addEventListener('click', () => {
+            clickCount++;
+            clickCounter.textContent = `Clicks: ${clickCount}`;
+            clickData.push(clickCount);
+            clickChart.data.labels.push(clickData.length);
+            clickChart.update();
+        });
+    </script>
+
+
+
+          
+        </body>
